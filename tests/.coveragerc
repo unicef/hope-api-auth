@@ -1,0 +1,14 @@
+[run]
+branch = true
+source = hope_api_auth
+omit = *migrations*
+
+[report]
+fail_under = 85
+ignore_errors = True
+exclude_lines =
+   pragma: no cover
+
+[html]
+directory = ~build/coverage
+title = Validator Coverage report

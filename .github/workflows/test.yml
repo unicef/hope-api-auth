@@ -1,0 +1,121 @@
+name: Test
+
+on:
+  workflow_dispatch:
+  push:
+    branches: [ "**" ]
+    tags-ignore: [ "**" ]
+  pull_request:
+  schedule:
+    - cron: "0 8 * * *"
+
+jobs:
+  changes:
+    runs-on: ubuntu-latest
+    timeout-minutes: 1
+    defaults:
+      run:
+        shell: bash
+    outputs:
+      run_tests: ${{ steps.changes.outputs.run_tests }}
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+      - id: changes
+        name: Check for file changes
+        uses: dorny/paths-filter@v3
+        with:
+          base: ${{ github.ref }}
+          token: ${{ github.token }}
+          filters: .github/file-filters.yml
+
+  test:
+    needs: [ changes ]
+    if: needs.changes.outputs.run_tests == 'true'
+    services:
+      redis:
+        image: redis
+      db:
+        image: postgres:14
+        env:
+          POSTGRES_DB: hope_api_auth
+          POSTGRES_PASSWORD: postgres
+          POSTGRES_USER: postgres
+#          POSTGRES_HOST: localhost
+#          POSTGRES_PORT: 5432
+        ports:
+          - 5432:5432
+        options: >-
+          --health-cmd pg_isready
+          --health-interval 10s
+          --health-timeout 5s
+          --health-retries 5
+    runs-on: ubuntu-latest
+    strategy:
+      fail-fast: false
+      matrix:
+        django: [ "52", "42"]
+        python: [ "3.13", "3.12", "3.11" ]
+    env:
+      CELERY_BROKER_URL: redis://redis:6379/0
+      CELERY_ALWAYS_EAGER: true
+      POSTGRES_DB: hope_api_auth
+      POSTGRES_PASSWORD: postgres
+      POSTGRES_USER: postgres
+      POSTGRES_HOST: localhost
+      POSTGRES_PORT: 5432
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+
+      - name: Show effective connection details
+        run: |
+          echo "PGUSER=$PGUSER"
+          echo "PGPASSWORD=$PGPASSWORD"
+          echo "DATABASE_URL=$DATABASE_URL"
+
+      - name: Install the latest version of uv
+        uses: astral-sh/setup-uv@v5
+        with:
+          version: "latest"
+          enable-cache: true
+          cache-dependency-glob: |
+            pyproject.toml
+            uv.lock
+          cache-suffix: ${{ matrix.python }}-${{ matrix.django }}
+          github-token: ${{ secrets.GITHUB_TOKEN }}
+          python-version: ${{ matrix.python }}
+
+      - name: Install tox
+        run: uv tool install --python-preference only-managed --python 3.13 tox --with tox-uv --with tox-gh-actions
+
+      - name: Install Python
+        if: matrix.python != '3.13'
+        run: uv python install --python-preference only-managed ${{ matrix.python }}
+
+      - name: Setup test suite
+        run: tox run -vv --notest --skip-missing-interpreters false -e d${{ matrix.django }}-py$(echo ${{ matrix.python }} | sed 's/\.//')
+
+      - name: Run test suite d${{ matrix.django }}-py${{ matrix.python }}
+        run: tox -e d${{ matrix.django }}-py$(echo ${{ matrix.python }} | sed 's/\.//')
+
+      - name: Upload pytest test results
+        uses: actions/upload-artifact@v4
+        with:
+          name: pytest-results-${{ matrix.python }}-${{matrix.django}}
+          path: junit-${{ matrix.python }}-${{matrix.django}}.xml
+        if: ${{ always() }}
+
+      - name: Upload coverage to Codecov
+        uses: codecov/codecov-action@v4
+        if: matrix.python == 3.12
+        continue-on-error: true
+        with:
+          env_vars: OS,PYTHON
+          fail_ci_if_error: true
+          flags: unittests
+          files: ./coverage.xml
+          verbose: false
+          token: ${{ secrets.CODECOV_TOKEN }}
+          name: codecov-${{env.GITHUB_REF_NAME}}
