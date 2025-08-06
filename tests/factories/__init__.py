@@ -11,6 +11,7 @@ from .base import (
     factories_registry,
     TAutoRegisterModelFactory,
 )
+from .auth import APITokenFactory, SuperUserAPITokenFactory  # noqa: F401
 from .user import GroupFactory, SuperUserFactory, UserFactory  # noqa
 
 for _, name, _ in pkgutil.iter_modules([str(Path(__file__).parent)]):

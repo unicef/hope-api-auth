@@ -3,7 +3,8 @@ import secrets
 
 from demo.models import Grant
 from hope_api_auth.models import APILogEntry, APIToken
-from tests.factories import AutoRegisterModelFactory, UserFactory
+from .base import AutoRegisterModelFactory
+from .user import UserFactory, SuperUserFactory
 
 import factory.fuzzy
 
@@ -32,6 +33,10 @@ class APITokenFactory(AutoRegisterModelFactory):
         if user and model_class.objects.filter(user=user).exists():
             return model_class.objects.get(user=user)
         return super()._create(model_class, *args, **kwargs)
+
+
+class SuperUserAPITokenFactory(APITokenFactory):
+    user = factory.SubFactory(SuperUserFactory)
 
 
 class APILogEntryFactory(AutoRegisterModelFactory):
