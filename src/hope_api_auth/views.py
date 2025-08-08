@@ -7,7 +7,7 @@ from rest_framework.views import APIView
 from rest_framework.viewsets import ModelViewSet
 
 from .auth import GrantedPermission, LoggingTokenAuthentication
-from .models import APILogEntry, Grant
+from .models import APILogEntry, GrantClass
 
 
 class LoggingAPIView(APIView):
@@ -15,7 +15,7 @@ class LoggingAPIView(APIView):
         GrantedPermission,
     ]
     authentication_classes = [LoggingTokenAuthentication]
-    permission = Grant.API_READ_ONLY
+    permission = GrantClass.API_READ_ONLY
     log_http_methods = ["POST", "PUT", "DELETE"]
 
     def dispatch(self, request: HttpRequest, *args: Any, **kwargs: Any) -> HttpResponseBase:

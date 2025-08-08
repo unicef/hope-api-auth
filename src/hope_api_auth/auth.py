@@ -11,6 +11,11 @@ from rest_framework.request import Request
 
 from .models import APIToken
 
+
+INVALID_TOKEN = "Invalid token."  # noqa: S105
+USER_INACTIVE_OR_DELETED = "User inactive or deleted."
+
+
 User = get_user_model()
 
 
@@ -27,10 +32,10 @@ class LoggingTokenAuthentication(TokenAuthentication):
                 .get(key=key)
             )
         except APIToken.DoesNotExist:
-            raise exceptions.AuthenticationFailed(_("Invalid token."))
+            raise exceptions.AuthenticationFailed(_(INVALID_TOKEN))
 
         if not token.user.is_active:
-            raise exceptions.AuthenticationFailed(_("User inactive or deleted."))
+            raise exceptions.AuthenticationFailed(_(USER_INACTIVE_OR_DELETED))
 
         return token.user, token
 
@@ -38,7 +43,9 @@ class LoggingTokenAuthentication(TokenAuthentication):
 class GrantedPermission(IsAuthenticated):
     def has_permission(self, request: Request, view: Any) -> bool:
         if bool(request.auth):
-            if view.permission == "any" or request.user and request.user.is_authenticated and request.user.is_superuser:
+            if view.permission == "any":
+                return True
+            if request.user and request.user.is_authenticated and request.user.is_superuser:
                 return True
             if view.permission:
                 return view.permission.name in request.auth.grants

@@ -4,7 +4,9 @@ from pathlib import Path
 import pytest
 import os
 
-from .factories import UserFactory, SuperUserFactory
+from pytest_factoryboy import register
+
+from .factories import APITokenFactory, UserFactory, SuperUserFactory, SuperUserAPITokenFactory
 
 
 here = Path(__file__).parent
@@ -23,14 +25,15 @@ def pytest_configure(config):
 
 
 @pytest.fixture
-def auth_user():
-    return UserFactory()
-
-
-@pytest.fixture
 def app(django_app_factory):
     django_app = django_app_factory(csrf_checks=False)
     admin_user = SuperUserFactory(username="superuser")
     django_app.set_user(admin_user)
     django_app._user = admin_user
     return django_app
+
+
+register(UserFactory)
+register(SuperUserFactory)
+register(APITokenFactory)
+register(SuperUserAPITokenFactory, "superuser_api_token")
