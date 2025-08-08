@@ -1,7 +1,9 @@
 [run]
 branch = true
 source = hope_api_auth
-omit = *migrations*
+omit =
+   *migrations*
+   src/hope_api_auth/version.py
 
 [report]
 fail_under = 85
