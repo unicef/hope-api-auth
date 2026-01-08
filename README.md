@@ -39,6 +39,6 @@ Testing
 
 Testing is important and tests are located in `tests/` directory and can be run with;
 
-    $ uv run pytest test
+    $ uv run pytest tests
 
 Coverage report is viewable in `build/coverage` directory, and can be generated with;

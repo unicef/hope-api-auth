@@ -1,3 +1,4 @@
+from django.contrib import messages
 from django.contrib.admin.sites import site
 from django.contrib.admin.templatetags.admin_urls import admin_urlname
 
@@ -11,6 +12,7 @@ from django_regex.utils import RegexList as _RegexList
 import pytest
 from unittest.mock import Mock
 
+from hope_api_auth.admin import APITokenAdmin
 
 if TYPE_CHECKING:
     from django.db.models.options import Options
@@ -185,3 +187,64 @@ def test_admin_buttons(app, modeladmin, button_handler, record, monkeypatch):
 
         res = app.get(url)
         assert res.status_code in [200, 302]
+
+
+@pytest.mark.skip_models(
+    "auth.Group",
+    "demo.User",
+    "hope_api_auth.APILogEntry",
+)
+def test_admin_send_token_email_oserror(app, modeladmin, record, monkeypatch):
+    request = app.request
+    def raise_error(*args, **kwargs):
+        raise OSError
+
+    monkeypatch.setattr(
+        "hope_api_auth.admin.send_mail",
+        raise_error,
+    )
+    message_user = Mock()
+    monkeypatch.setattr(modeladmin, "message_user", message_user)
+    modeladmin._send_token_email(request, record, "{friendly_name}")
+    message_user.assert_called_once_with(
+        request,
+        f"Unable to send notification email to {record.user.email}",
+        messages.ERROR,
+    )
+
+@pytest.mark.skip_models(
+    "auth.Group",
+    "demo.User",
+    "hope_api_auth.APILogEntry",
+)
+def test_admin_resend_email(app, modeladmin, record, monkeypatch):
+    request = app.request
+    send_mock = Mock()
+    monkeypatch.setattr(modeladmin, "_send_token_email", send_mock)
+
+    modeladmin.resend_email(request, record.pk)
+    send_mock.assert_called_once()
+
+
+@pytest.mark.skip_models(
+    "auth.Group",
+    "demo.User",
+    "hope_api_auth.APILogEntry",
+)
+def test_admin_save_model_create_sends_email(
+    app,
+    modeladmin,
+    record,
+    monkeypatch,
+):
+    request = app.request
+    send_mock = Mock()
+    monkeypatch.setattr(modeladmin, "_send_token_email", send_mock)
+
+    modeladmin.save_model(
+        request=request,
+        obj=record,
+        form=None,
+        change=False,
+    )
+    send_mock.assert_called_once()
