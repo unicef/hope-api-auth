@@ -12,7 +12,6 @@ from django_regex.utils import RegexList as _RegexList
 import pytest
 from unittest.mock import Mock
 
-from hope_api_auth.admin import APITokenAdmin
 
 if TYPE_CHECKING:
     from django.db.models.options import Options
@@ -196,6 +195,7 @@ def test_admin_buttons(app, modeladmin, button_handler, record, monkeypatch):
 )
 def test_admin_send_token_email_oserror(app, modeladmin, record, monkeypatch):
     request = app.request
+
     def raise_error(*args, **kwargs):
         raise OSError
 
@@ -211,6 +211,7 @@ def test_admin_send_token_email_oserror(app, modeladmin, record, monkeypatch):
         f"Unable to send notification email to {record.user.email}",
         messages.ERROR,
     )
+
 
 @pytest.mark.skip_models(
     "auth.Group",

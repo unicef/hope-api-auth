@@ -4,8 +4,8 @@ HOPE-API-AUTH
 +----------------------+-----------------------------------------------------------------------------------------------------------------------------------------------------------+
 | Menu                 | Link                                                                                                                                                      |
 +----------------------+-----------------------------------------------------------------------------------------------------------------------------------------------------------+
-| Coverage Development | [![codecov](https://codecov.io/gh/unicef/hope-api-auth/branch/develop/graph/badge.svg?token=sytM1cd8Zj)](https://codecov.io/gh/unicef/hope-api-auth)                                                                                                                                    |
-| Coverage Stable      | [![codecov](https://codecov.io/gh/unicef/hope-api-auth/branch/master/graph/badge.svg?token=sytM1cd8Zj)](https://codecov.io/gh/unicef/hope-api-auth)                                                                                                                                    |
+| Coverage Development | [![codecov](https://codecov.io/gh/unicef/hope-api-auth/branch/main/graph/badge.svg?token=sytM1cd8Zj)](https://codecov.io/gh/unicef/hope-api-auth)                                                                                                                                    |
+| Coverage Stable      | [![codecov](https://codecov.io/gh/unicef/hope-api-auth/branch/main/graph/badge.svg?token=sytM1cd8Zj)](https://codecov.io/gh/unicef/hope-api-auth)                                                                                                                                    |
 | Issue tracker        | https://github.com/unicef/hope-api-auth/issues                                                                                                          |
 +----------------------+-----------------------------------------------------------------------------------------------------------------------------------------------------------+
 
