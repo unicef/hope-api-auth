@@ -1,13 +1,11 @@
 HOPE-API-AUTH
 =============
 
-+----------------------+-----------------------------------------------------------------------------------------------------------------------------------------------------------+
-| Menu                 | Link                                                                                                                                                      |
-+----------------------+-----------------------------------------------------------------------------------------------------------------------------------------------------------+
-| Coverage Development | [![codecov](https://codecov.io/gh/unicef/hope-api-auth/branch/main/graph/badge.svg?token=sytM1cd8Zj)](https://codecov.io/gh/unicef/hope-api-auth)                                                                                                                                    |
-| Coverage Stable      | [![codecov](https://codecov.io/gh/unicef/hope-api-auth/branch/main/graph/badge.svg?token=sytM1cd8Zj)](https://codecov.io/gh/unicef/hope-api-auth)                                                                                                                                    |
-| Issue tracker        | https://github.com/unicef/hope-api-auth/issues                                                                                                          |
-+----------------------+-----------------------------------------------------------------------------------------------------------------------------------------------------------+
+| Menu               | Badge / Link                                                                                                                                      |
+| -------------------- | ------------------------------------------------------------------------------------------------------------------------------------------------- |
+| Coverage Development | [![codecov](https://codecov.io/gh/unicef/hope-api-auth/branch/main/graph/badge.svg?token=sytM1cd8Zj)](https://codecov.io/gh/unicef/hope-api-auth) |
+| Coverage Stable      | [![codecov](https://codecov.io/gh/unicef/hope-api-auth/branch/main/graph/badge.svg?token=sytM1cd8Zj)](https://codecov.io/gh/unicef/hope-api-auth) |
+| Issue Tracker        | [GitHub Issues](https://github.com/unicef/hope-api-auth/issues)                                                                                   |
 
 Installation
 ------------
