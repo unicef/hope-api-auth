@@ -1,13 +1,11 @@
 HOPE-API-AUTH
 =============
 
-+----------------------+-----------------------------------------------------------------------------------------------------------------------------------------------------------+
-| Menu                 | Link                                                                                                                                                      |
-+----------------------+-----------------------------------------------------------------------------------------------------------------------------------------------------------+
-| Coverage Development | [![codecov](https://codecov.io/gh/unicef/hope-api-auth/branch/develop/graph/badge.svg?token=sytM1cd8Zj)](https://codecov.io/gh/unicef/hope-api-auth)                                                                                                                                    |
-| Coverage Stable      | [![codecov](https://codecov.io/gh/unicef/hope-api-auth/branch/master/graph/badge.svg?token=sytM1cd8Zj)](https://codecov.io/gh/unicef/hope-api-auth)                                                                                                                                    |
-| Issue tracker        | https://github.com/unicef/hope-api-auth/issues                                                                                                          |
-+----------------------+-----------------------------------------------------------------------------------------------------------------------------------------------------------+
+| Menu               | Badge / Link                                                                                                                                      |
+| -------------------- | ------------------------------------------------------------------------------------------------------------------------------------------------- |
+| Coverage Development | [![codecov](https://codecov.io/gh/unicef/hope-api-auth/branch/main/graph/badge.svg?token=sytM1cd8Zj)](https://codecov.io/gh/unicef/hope-api-auth) |
+| Coverage Stable      | [![codecov](https://codecov.io/gh/unicef/hope-api-auth/branch/main/graph/badge.svg?token=sytM1cd8Zj)](https://codecov.io/gh/unicef/hope-api-auth) |
+| Issue Tracker        | [GitHub Issues](https://github.com/unicef/hope-api-auth/issues)                                                                                   |
 
 Installation
 ------------
@@ -39,6 +37,6 @@ Testing
 
 Testing is important and tests are located in `tests/` directory and can be run with;
 
-    $ uv run pytest test
+    $ uv run pytest tests
 
 Coverage report is viewable in `build/coverage` directory, and can be generated with;
