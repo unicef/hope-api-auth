@@ -10,7 +10,7 @@ import factory.fuzzy
 
 
 def unique_token_key():
-    from hope_api_auth.models import APIToken
+    from hope_api_auth.models import APIToken  # noqa
 
     while True:
         key = secrets.token_hex(20)

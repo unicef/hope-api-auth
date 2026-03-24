@@ -19,7 +19,7 @@ def pytest_configure(config):
     os.environ["DEBUG"] = "False"
     os.environ.update(DJANGO_SETTINGS_MODULE="demo.settings")
 
-    import django
+    import django  # noqa
 
     django.setup()
 
