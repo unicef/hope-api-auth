@@ -10,7 +10,7 @@ from .auth import GrantedPermission, LoggingTokenAuthentication
 from .models import APILogEntry, GrantClass
 
 
-class LoggingAPIView(APIView):
+class TokenRequiredView(APIView):
     permission_classes = [
         GrantedPermission,
     ]
@@ -42,5 +42,5 @@ class LoggingAPIView(APIView):
         return super().handle_exception(exc)
 
 
-class LoggingAPIViewSet(ModelViewSet, LoggingAPIView):
+class TokenRequiredViewSet(ModelViewSet, TokenRequiredView):
     pass

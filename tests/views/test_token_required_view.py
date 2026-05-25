@@ -9,10 +9,10 @@ from rest_framework.response import Response
 from rest_framework.test import APIRequestFactory, force_authenticate
 
 from hope_api_auth.models import APILogEntry, APIToken, GrantClass
-from hope_api_auth.views import LoggingAPIView
+from hope_api_auth.views import TokenRequiredView
 
 ALL_HTTP_METHODS = "GET", "POST", "PUT", "DELETE"
-NOT_LOGGED_HTTP_METHODS = tuple(set(ALL_HTTP_METHODS) - set(LoggingAPIView.log_http_methods))
+NOT_LOGGED_HTTP_METHODS = tuple(set(ALL_HTTP_METHODS) - set(TokenRequiredView.log_http_methods))
 
 LOGGED_STATUSES = status.HTTP_200_OK, status.HTTP_404_NOT_FOUND, status.HTTP_500_INTERNAL_SERVER_ERROR
 NOT_LOGGED_STATUSES = status.HTTP_301_MOVED_PERMANENTLY, status.HTTP_302_FOUND
@@ -49,7 +49,7 @@ def http_method_handler_mock(http_status_code: int) -> Mock:
 
 @pytest.fixture
 def test_view(http_method_handler_mock: Mock) -> Callable:
-    class TestView(LoggingAPIView):
+    class TestView(TokenRequiredView):
         def __getattr__(self, item) -> Callable:
             if item.upper() in ALL_HTTP_METHODS:
                 return http_method_handler_mock
@@ -62,7 +62,7 @@ pytestmark = pytest.mark.django_db
 
 
 @pytest.mark.parametrize("http_status_code", LOGGED_STATUSES, indirect=True)
-@pytest.mark.parametrize("http_method_name", LoggingAPIView.log_http_methods, indirect=True)
+@pytest.mark.parametrize("http_method_name", TokenRequiredView.log_http_methods, indirect=True)
 def test_dispatch_methods_logged(
     http_request: WSGIRequest,
     test_view: Callable,
@@ -88,7 +88,7 @@ def test_dispatch_methods_not_logged_methods(http_request: WSGIRequest, test_vie
 
 
 @pytest.mark.parametrize("http_status_code", NOT_LOGGED_STATUSES, indirect=True)
-@pytest.mark.parametrize("http_method_name", LoggingAPIView.log_http_methods, indirect=True)
+@pytest.mark.parametrize("http_method_name", TokenRequiredView.log_http_methods, indirect=True)
 def test_dispatch_methods_not_logged_statuses(http_request: WSGIRequest, test_view: Callable) -> None:
     test_view(http_request)
 
@@ -106,7 +106,7 @@ def test_dispatch_methods_not_logged_statuses(http_request: WSGIRequest, test_vi
 def test_handle_exception_permission_denied(
     super_mock: Mock, permission: GrantClass | None, expected_error_message: str
 ) -> None:
-    view = LoggingAPIView()
+    view = TokenRequiredView()
     view.permission = permission
 
     view.handle_exception(PermissionDenied())
@@ -121,7 +121,7 @@ def test_handle_exception_permission_denied(
 
 @patch("hope_api_auth.views.super")
 def test_handle_exception_not_permission_denied(super_mock: Mock) -> None:
-    LoggingAPIView().handle_exception(exception := Exception())
+    TokenRequiredView().handle_exception(exception := Exception())
 
     super_handle_exception_mock = super_mock.return_value.handle_exception
     super_handle_exception_mock.assert_called_once()
