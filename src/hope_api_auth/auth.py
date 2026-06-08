@@ -1,7 +1,8 @@
+from functools import lru_cache
 from typing import Any
 
-from django.contrib.auth import get_user_model
-from django.db.models import Q
+import swapper
+from django.db.models import Model, Q
 from django.utils import timezone
 from django.utils.translation import gettext_lazy as _
 from rest_framework import exceptions
@@ -9,30 +10,31 @@ from rest_framework.authentication import TokenAuthentication
 from rest_framework.permissions import IsAuthenticated
 from rest_framework.request import Request
 
-from .models import APIToken
-
 
 INVALID_TOKEN = "Invalid token."  # noqa: S105
 USER_INACTIVE_OR_DELETED = "User inactive or deleted."
 
 
-User = get_user_model()
+@lru_cache
+def get_api_token_model() -> type[Model]:
+    return swapper.load_model("hope_api_auth", "APIToken")
 
 
 class LoggingTokenAuthentication(TokenAuthentication):
     keyword = "Token"
-    model = APIToken
 
-    def authenticate_credentials(self, key: str) -> tuple[User, APIToken]:
+    def authenticate_credentials(self, key: str) -> tuple[Any, Model]:
+        token_model = get_api_token_model()
+
         try:
             token = (
-                APIToken.objects.select_related("user")
+                token_model.objects.select_related("user")
                 .filter(valid_from__lte=timezone.now())
                 .filter(Q(valid_to__gte=timezone.now()) | Q(valid_to__isnull=True))
                 .get(key=key)
             )
-        except APIToken.DoesNotExist:
-            raise exceptions.AuthenticationFailed(_(INVALID_TOKEN))
+        except token_model.DoesNotExist:
+            raise exceptions.AuthenticationFailed(_(INVALID_TOKEN)) from None
 
         if not token.user.is_active:
             raise exceptions.AuthenticationFailed(_(USER_INACTIVE_OR_DELETED))
