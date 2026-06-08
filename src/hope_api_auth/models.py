@@ -41,7 +41,7 @@ class APIToken(AbstractAPIToken):
 
 
 class APILogEntry(models.Model):
-    token = models.ForeignKey(APIToken, on_delete=models.PROTECT)
+    token = models.ForeignKey(settings.HOPE_API_AUTH_APITOKEN_MODEL, on_delete=models.PROTECT)
     timestamp = models.DateTimeField(default=timezone.now)
     url = models.URLField()
     method = models.CharField(max_length=10)
