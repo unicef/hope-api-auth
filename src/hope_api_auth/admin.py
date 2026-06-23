@@ -79,14 +79,13 @@ class APITokenAdmin(SmartModelAdmin):
     }
     form = APITokenForm
     search_fields = ("id",)
-    readonly_fields = ("key",)
 
     def get_queryset(self, request: HttpRequest) -> QuerySet:
         return super().get_queryset(request).select_related("user")
 
     def get_fields(self, request: HttpRequest, obj: Any | None = None) -> tuple[str, ...]:
         if obj:
-            return super().get_fields(request, obj)
+            return "user", "allowed_ips", "valid_from", "valid_to", "grants"
         return "user", "grants", "valid_to"
 
     def get_readonly_fields(self, request: HttpRequest, obj: Any | None = None) -> tuple[str, ...]:

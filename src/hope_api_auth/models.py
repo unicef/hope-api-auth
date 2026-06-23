@@ -23,6 +23,8 @@ GrantClass = get_grant_class()
 
 
 class AbstractAPIToken(Token):
+    id = models.AutoField(primary_key=True)
+    key = models.CharField(_("Key"), max_length=40, unique=True)
     allowed_ips = models.CharField(_("IPs"), max_length=200, blank=True, null=True)
     valid_from = models.DateField(default=timezone.now)
     valid_to = models.DateField(blank=True, null=True)
