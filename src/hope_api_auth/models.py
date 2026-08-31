@@ -2,14 +2,13 @@ import swapper
 from django.db import models
 from django.utils import timezone
 from django.utils.translation import gettext_lazy as _
+from django.conf import settings
+from functools import lru_cache
+from importlib import import_module
+
 from rest_framework.authtoken.models import Token
 
 from .fields import ChoiceArrayField
-
-
-from django.conf import settings
-from importlib import import_module
-from functools import lru_cache
 
 
 @lru_cache
@@ -25,6 +24,12 @@ GrantClass = get_grant_class()
 class AbstractAPIToken(Token):
     id = models.AutoField(primary_key=True)
     key = models.CharField(_("Key"), max_length=40, unique=True)
+    user = models.ForeignKey(
+        settings.AUTH_USER_MODEL,
+        on_delete=models.CASCADE,
+        related_name="api_tokens",
+        verbose_name=_("User"),
+    )
     allowed_ips = models.CharField(_("IPs"), max_length=200, blank=True, null=True)
     valid_from = models.DateField(default=timezone.now)
     valid_to = models.DateField(blank=True, null=True)
