@@ -2,14 +2,14 @@
 build-backend = "hatchling.build"
 requires = [
   "hatch-vcs>=0.4",
-  "hatchling>=1.25",
+  "hatchling>=1.25,<1.26",
 ]
 
 [project]
 name = "hope-api-auth"
 description = "Provides API Authentication and Authorization within HOPE Ecosystem"
 readme = "README.md"
-license = "Apache-2.0 OR MIT"
+license = { text = "MIT" }
 authors = [
   { name = "UNICEF", email = "rapidpro@unicef.org" },
 ]
