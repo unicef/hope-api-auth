@@ -35,7 +35,6 @@ dependencies = [
   "django-adminfilters",
   "django-smart-admin",
   "djangorestframework",
-  "psycopg2-binary",
   "swapper",
 ]
 
@@ -48,6 +47,7 @@ dev = [
   "factory-boy",
   "mock",
   "pre-commit",
+  "psycopg",
   "pytest",
   "pytest-cov",
   "pytest-django",
